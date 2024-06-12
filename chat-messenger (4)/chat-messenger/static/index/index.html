@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Messenger</title>
+    <link rel="stylesheet" href="/static/index/index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="changing-phrases">
+                <p>Write a text</p>
+                <p>asking a friend to be my plus-one at a wedding</p>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="chat-header">
+                <a href="/login" class="chat-logo">Chat 95</a>
+                <div class="tabs">
+                    <!-- Add your tab icons here if needed -->
+                </div>
+            </div>
+            <div class="chat-box" id="chat-box">
+                <!-- Placeholder for messages, to be dynamically updated by JavaScript -->
+            </div>
+            <form action="/send" method="post" class="chat-form">
+                <input type="text" name="content" placeholder="Message" required class="input-field">
+                <button type="submit" class="send-button">Send</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Function to fetch and display messages
+        function fetchMessages() {
+            fetch('/messages')
+                .then(response => response.json())
+                .then(data => {
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = '';
+                    data.reverse().forEach(msg => {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'message-icon';
+                        msgDiv.innerHTML = '<span class="username">' + msg.Username + ':</span> <span class="message-content">' + msg.Content + '</span>';
+                        chatBox.appendChild(msgDiv);
+                    });
+                    chatBox.scrollTop = 0;
+                });
+        }
+
+        setInterval(fetchMessages, 1000);
+
+        // Function to change phrases creatively
+        function changePhrases() {
+            const phrases = [
+                'Write a text',
+                'asking a friend to be my plus-one at a wedding',
+                'reminding a colleague about a meeting',
+                'congratulating a friend on their promotion',
+                'wishing someone a happy birthday'
+            ];
+            let index = 0;
+            setInterval(() => {
+                document.querySelector('.changing-phrases p:last-child').textContent = phrases[index];
+                index = (index + 1) % phrases.length;
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', changePhrases);
+    </script>
+</body>
+</html>
